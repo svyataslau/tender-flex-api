@@ -25,9 +25,4 @@ public class UserController {
   public ResponseEntity<User> saveUser(@RequestBody User user) {
     return ResponseEntity.ok(user);
   }
-
-  @GetMapping("/auth")
-  public ResponseEntity<String> sayHi() {
-    return ResponseEntity.ok("Hi");
-  }
 }
