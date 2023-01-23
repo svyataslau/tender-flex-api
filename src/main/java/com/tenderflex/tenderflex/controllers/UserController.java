@@ -1,13 +1,11 @@
 package com.tenderflex.tenderflex.controllers;
 
-import com.tenderflex.tenderflex.models.User;
+import com.tenderflex.tenderflex.models.ApplicationUser;
 import lombok.AllArgsConstructor;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -18,13 +16,13 @@ public class UserController {
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public List<User> getAllUsers() {
+    public ResponseEntity<String> getAllUsers() {
         System.out.println("getAllUsers");
-        return jdbcTemplate.query("SELECT * from user_profile", BeanPropertyRowMapper.newInstance(User.class));
+        return ResponseEntity.ok("getUsers");
     }
 
     @PostMapping
-    public void registerNewUser(@RequestBody User user) {
+    public void registerNewUser(@RequestBody ApplicationUser user) {
         System.out.println("registerNewUser");
         System.out.println(user);
     }
@@ -38,7 +36,7 @@ public class UserController {
 
     @PutMapping(path = "{userId}")
     @PreAuthorize("hasAuthority('user:write')")
-    public void updateUser(@PathVariable("userId") Integer userId, @RequestBody User user) {
+    public void updateUser(@PathVariable("userId") Integer userId, @RequestBody ApplicationUser user) {
         System.out.println("updateUser");
         System.out.println(String.format("%s %s", userId, user));
     }

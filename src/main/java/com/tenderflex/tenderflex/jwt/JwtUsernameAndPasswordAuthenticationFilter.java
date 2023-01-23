@@ -1,6 +1,7 @@
 package com.tenderflex.tenderflex.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tenderflex.tenderflex.models.UsernameAndPasswordAuthenticationRequest;
 import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;

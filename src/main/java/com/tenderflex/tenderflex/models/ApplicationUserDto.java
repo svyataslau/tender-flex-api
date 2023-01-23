@@ -1,11 +1,13 @@
-package com.tenderflex.tenderflex.jwt;
+package com.tenderflex.tenderflex.models;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @NoArgsConstructor
-public class UsernameAndPasswordAuthenticationRequest {
+@Data
+public class ApplicationUserDto {
+    private Long id;
     private String username;
+    private String email;
     private String password;
 }

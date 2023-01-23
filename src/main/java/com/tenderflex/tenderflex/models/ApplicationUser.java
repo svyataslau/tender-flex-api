@@ -1,6 +1,8 @@
-package com.tenderflex.tenderflex.auth;
+package com.tenderflex.tenderflex.models;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -9,8 +11,11 @@ import java.util.Set;
 
 @AllArgsConstructor
 public class ApplicationUser implements UserDetails {
-
+    @Getter @Setter
+    private final Long id;
     private final String username;
+    @Getter @Setter
+    private final String email;
     private final String password;
     private final Set<? extends GrantedAuthority> grantedAuthorities;
     private final boolean isAccountNonExpired;

@@ -1,10 +1,10 @@
 package com.tenderflex.tenderflex.config;
 
-import com.tenderflex.tenderflex.auth.ApplicationUserService;
+import com.tenderflex.tenderflex.service.ApplicationUserService;
 import com.tenderflex.tenderflex.jwt.JwtConfig;
 import com.tenderflex.tenderflex.jwt.JwtTokenVerifier;
 import com.tenderflex.tenderflex.jwt.JwtUsernameAndPasswordAuthenticationFilter;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import javax.crypto.SecretKey;
 
 @Configuration
+@AllArgsConstructor
 @EnableWebSecurity
 @EnableConfigurationProperties(JwtConfig.class)
 // Keep in mind: without EnableGlobalMethodSecurity @PreAuthorize in controller will not protect endpoints
@@ -30,17 +31,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   private final ApplicationUserService applicationUserService;
   private final SecretKey secretKey;
   private final JwtConfig jwtConfig;
-
-  @Autowired
-  public SecurityConfig(PasswordEncoder passwordEncoder,
-                                   ApplicationUserService applicationUserService,
-                                   SecretKey secretKey,
-                                   JwtConfig jwtConfig) {
-    this.passwordEncoder = passwordEncoder;
-    this.applicationUserService = applicationUserService;
-    this.secretKey = secretKey;
-    this.jwtConfig = jwtConfig;
-  }
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
@@ -68,34 +58,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     provider.setUserDetailsService(applicationUserService);
     return provider;
   }
-
-//  @Override
-//  @Bean
-//  protected UserDetailsService userDetailsService() {
-//    UserDetails bidderUser = User.builder()
-//            .username("bidder")
-//            .password(passwordEncoder.encode("password"))
-//            .authorities(BIDDER.getGrantedAuthorities())
-//            .build();
-//
-//    UserDetails adminUser = User.builder()
-//            .username("admin")
-//            .password(passwordEncoder.encode("password"))
-//            .authorities(ADMIN.getGrantedAuthorities())
-//            .build();
-//
-//    UserDetails contractorUser = User.builder()
-//            .username("contractor")
-//            .password(passwordEncoder.encode("password"))
-//            .authorities(CONTRACTOR.getGrantedAuthorities())
-//            .build();
-//
-//    return new InMemoryUserDetailsManager(
-//            bidderUser,
-//            adminUser,
-//            contractorUser
-//    );
-//
-//  }
 
 }
