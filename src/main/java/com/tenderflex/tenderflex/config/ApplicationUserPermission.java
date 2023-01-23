@@ -1,10 +1,10 @@
 package com.tenderflex.tenderflex.config;
 
 public enum ApplicationUserPermission {
-    STUDENT_READ("student:read"),
-    STUDENT_WRITE("student:write"),
-    COURSE_READ("course:read"),
-    COURSE_WRITE("course:write");
+    USER_READ("user:read"),
+    USER_WRITE("user:write"),
+    TENDER_READ("tender:read"),
+    TENDER_WRITE("tender:write");
 
     private final String permission;
 

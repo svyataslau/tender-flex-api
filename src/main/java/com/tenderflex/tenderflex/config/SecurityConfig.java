@@ -3,6 +3,7 @@ package com.tenderflex.tenderflex.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -12,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
+import static com.tenderflex.tenderflex.config.ApplicationUserPermission.USER_WRITE;
 import static com.tenderflex.tenderflex.config.ApplicationUserRole.*;
 
 @Configuration
@@ -27,10 +29,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
-    http
+    http.csrf().disable()
       .authorizeRequests()
       .antMatchers("/").permitAll()
-      .antMatchers("/users/**").hasRole(STUDENT.name())
+      // TODO:  find out why for some reason @PreAuthorize does not protect the endpoint in the UserController
+      .antMatchers(HttpMethod.DELETE, "/users/**").hasAuthority(USER_WRITE.getPermission())
+      .antMatchers(HttpMethod.PUT, "/users/**").hasAuthority(USER_WRITE.getPermission())
+      .antMatchers("/users/**").hasRole(ADMIN.name())
       .anyRequest()
       .authenticated()
       .and()
@@ -40,28 +45,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   @Bean
   protected UserDetailsService userDetailsService() {
-    UserDetails annaSmithUser = User.builder()
-            .username("annasmith")
+    UserDetails bidderUser = User.builder()
+            .username("bidder")
             .password(passwordEncoder.encode("password"))
-            .roles(STUDENT.name()) // ROLE_STUDENT
+            .authorities(BIDDER.getGrantedAuthorities())
             .build();
 
-    UserDetails lindaUser = User.builder()
-            .username("linda")
-            .password(passwordEncoder.encode("password123"))
-            .roles(ADMIN.name()) // ROLE_ADMIN
+    UserDetails adminUser = User.builder()
+            .username("admin")
+            .password(passwordEncoder.encode("password"))
+            .authorities(ADMIN.getGrantedAuthorities())
             .build();
 
-    UserDetails tomUser = User.builder()
-            .username("tom")
-            .password(passwordEncoder.encode("password123"))
-            .roles(ADMINTRAINEE.name()) // ROLE_ADMINTRAINEE
+    UserDetails contractorUser = User.builder()
+            .username("contractor")
+            .password(passwordEncoder.encode("password"))
+            .authorities(CONTRACTOR.getGrantedAuthorities())
             .build();
 
     return new InMemoryUserDetailsManager(
-            annaSmithUser,
-            lindaUser,
-            tomUser
+            bidderUser,
+            adminUser,
+            contractorUser
     );
 
   }

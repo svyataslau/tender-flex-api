@@ -1,27 +1,17 @@
 package com.tenderflex.tenderflex.config;
 
 import com.google.common.collect.Sets;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.tenderflex.tenderflex.config.ApplicationUserPermission.*;
 
 public enum ApplicationUserRole {
-    //that's the reason why we could use gueva ---> too much code
-//    STUDENT(new HashSet<>()),
-//    ADMIN(new HashSet<>(){{
-//        add(COURSE_READ);
-//        add(COURSE_WRITE);
-//        add(STUDENT_READ);
-//        add(STUDENT_WRITE);
-//    }}),
-//    ADMINTRAINEE(new HashSet<>(){{
-//        add(COURSE_READ);
-//        add(STUDENT_READ);
-//    }});
-    STUDENT(Sets.newHashSet()),
-    ADMIN(Sets.newHashSet(COURSE_READ, COURSE_WRITE, STUDENT_READ, STUDENT_WRITE)),
-    ADMINTRAINEE(Sets.newHashSet(COURSE_READ, STUDENT_READ));
+    ADMIN(Sets.newHashSet(USER_READ, USER_WRITE)),
+    BIDDER(Sets.newHashSet(TENDER_READ, USER_WRITE)),
+    CONTRACTOR(Sets.newHashSet(TENDER_READ, TENDER_WRITE, USER_WRITE));
 
     private final Set<ApplicationUserPermission> permissions;
 
@@ -30,6 +20,14 @@ public enum ApplicationUserRole {
     }
 
     public Set<ApplicationUserPermission> getPermissions() {
+        return permissions;
+    }
+
+    public Set<SimpleGrantedAuthority> getGrantedAuthorities() {
+        Set<SimpleGrantedAuthority> permissions = getPermissions().stream()
+                .map(permission -> new SimpleGrantedAuthority(permission.getPermission()))
+                .collect(Collectors.toSet());
+        permissions.add(new SimpleGrantedAuthority("ROLE_" + this.name()));
         return permissions;
     }
 }
