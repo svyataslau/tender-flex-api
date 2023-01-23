@@ -3,7 +3,7 @@ package com.tenderflex.tenderflex.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -13,11 +13,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
-import static com.tenderflex.tenderflex.config.ApplicationUserPermission.USER_WRITE;
 import static com.tenderflex.tenderflex.config.ApplicationUserRole.*;
 
 @Configuration
 @EnableWebSecurity
+// Keep in mind: without EnableGlobalMethodSecurity @PreAuthorize in controller will not protect endpoints
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   private final PasswordEncoder passwordEncoder;
@@ -32,10 +33,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     http.csrf().disable()
       .authorizeRequests()
       .antMatchers("/").permitAll()
-      // TODO:  find out why for some reason @PreAuthorize does not protect the endpoint in the UserController
-      .antMatchers(HttpMethod.DELETE, "/users/**").hasAuthority(USER_WRITE.getPermission())
-      .antMatchers(HttpMethod.PUT, "/users/**").hasAuthority(USER_WRITE.getPermission())
-      .antMatchers("/users/**").hasRole(ADMIN.name())
       .anyRequest()
       .authenticated()
       .and()
