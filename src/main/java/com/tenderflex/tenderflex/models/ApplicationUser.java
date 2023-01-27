@@ -18,9 +18,7 @@ public class ApplicationUser implements UserDetails {
     private Set<SimpleGrantedAuthority> authorities;
 
     @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+    public boolean isAccountNonExpired() { return true; }
 
     @Override
     public boolean isAccountNonLocked() {

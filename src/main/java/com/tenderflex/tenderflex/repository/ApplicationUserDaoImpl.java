@@ -24,36 +24,35 @@ public class ApplicationUserDaoImpl implements ApplicationUserDao {
     @Override
     public ApplicationUserDto selectApplicationUserByUsername(String username) {
         UserDto userDto = this.jdbcTemplate.queryForObject(
-                    "SELECT up.*, ur.title\n" +
+                    "SELECT up.*, ur.role\n" +
                             "FROM user_profile up\n" +
                             "JOIN user_role ur\n" +
                             "ON up.user_role_id=ur.id\n" +
                             "WHERE username=?", BeanPropertyRowMapper.newInstance(UserDto.class), username);
 
-        Set<SimpleGrantedAuthority> userAuthorities = new HashSet<>();
-
-        List<Authority> permissions = this.jdbcTemplate.query(
+        List<Authority> permissions = this.jdbcTemplate.query("" +
                 "SELECT p.title\n" +
                 "FROM user_role ur\n" +
                 "INNER JOIN user_role_access ura\n" +
                 "ON ur.id=ura.user_role_id\n" +
                 "JOIN \"permission\" p\n" +
                 "ON p.id=ura.permission_id\n" +
-                "WHERE ur.title=?", BeanPropertyRowMapper.newInstance(Authority.class), userDto.getRole());
+                "WHERE ur.role=?", BeanPropertyRowMapper.newInstance(Authority.class), userDto.getRole());
+
+        Set<SimpleGrantedAuthority> userAuthorities = new HashSet<>();
 
         permissions.stream().forEach(permission -> {
             userAuthorities.add(new SimpleGrantedAuthority(permission.getTitle()));
         });
-
         userAuthorities.add(new SimpleGrantedAuthority("ROLE_" + userDto.getRole()));
-
-        return new ApplicationUserDto(
-            userDto.getId(),
-            userDto.getUsername(),
-            userDto.getEmail(),
-            passwordEncoder.encode(userDto.getPassword()),
-            userDto.getRole(),
-            userAuthorities
+        ApplicationUserDto dto = new ApplicationUserDto(
+                userDto.getId(),
+                userDto.getUsername(),
+                userDto.getEmail(),
+                passwordEncoder.encode(userDto.getPassword()),
+                userDto.getRole(),
+                userAuthorities
         );
+        return dto;
     }
 }

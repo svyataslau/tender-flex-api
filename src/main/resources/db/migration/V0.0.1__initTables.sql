@@ -1,7 +1,7 @@
 CREATE TABLE user_role
 (
     id    SERIAL,
-    title VARCHAR(128) UNIQUE,
+    role VARCHAR(128) UNIQUE,
     PRIMARY KEY (id)
 );
 
@@ -30,9 +30,9 @@ CREATE TABLE user_role_access
     PRIMARY KEY (id)
 );
 
-INSERT INTO user_role (title) VALUES ('BIDDER');
-INSERT INTO user_role (title) VALUES ('CONTRACTOR');
-INSERT INTO user_role (title) VALUES ('ADMIN');
+INSERT INTO user_role (role) VALUES ('BIDDER');
+INSERT INTO user_role (role) VALUES ('CONTRACTOR');
+INSERT INTO user_role (role) VALUES ('ADMIN');
 
 INSERT INTO permission (title) VALUES ('user:read');
 INSERT INTO permission (title) VALUES ('userList:read');

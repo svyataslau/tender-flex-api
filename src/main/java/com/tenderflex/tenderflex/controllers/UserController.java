@@ -16,7 +16,7 @@ public class UserController {
     public final JdbcTemplate jdbcTemplate;
 
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> getAllUsers() {
         System.out.println("getAllUsers");
         return ResponseEntity.ok("getUsers");
