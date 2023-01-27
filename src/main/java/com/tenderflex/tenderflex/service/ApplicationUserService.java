@@ -1,7 +1,6 @@
 package com.tenderflex.tenderflex.service;
 
 import com.tenderflex.tenderflex.converter.ApplicationUserConverter;
-import com.tenderflex.tenderflex.models.ApplicationUserDto;
 import com.tenderflex.tenderflex.repository.ApplicationUserDao;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,13 +13,14 @@ import org.springframework.stereotype.Service;
 public class ApplicationUserService implements UserDetailsService {
 
     private final ApplicationUserDao applicationUserDao;
-    public final ApplicationUserConverter applicationUserConverter;
+    private final ApplicationUserConverter applicationUserConverter;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         try {
-            ApplicationUserDto applicationUserDto = applicationUserDao.selectApplicationUserByUsername(username);
-            return applicationUserConverter.convertToEntity(applicationUserDto);
+            return applicationUserConverter.convertToEntity(
+                    applicationUserDao.selectApplicationUserByUsername(username)
+            );
         } catch (Exception e) {
             throw new UsernameNotFoundException(String.format("Username %s not found in db", username));
         }

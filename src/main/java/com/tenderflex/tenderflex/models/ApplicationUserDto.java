@@ -1,13 +1,18 @@
 package com.tenderflex.tenderflex.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-@NoArgsConstructor
+import java.util.Set;
+
+@AllArgsConstructor
 @Data
 public class ApplicationUserDto {
     private Long id;
     private String username;
     private String email;
     private String password;
+    private String role;
+    private Set<SimpleGrantedAuthority> authorities;
 }
