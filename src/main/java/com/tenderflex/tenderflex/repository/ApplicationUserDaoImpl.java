@@ -30,7 +30,7 @@ public class ApplicationUserDaoImpl implements ApplicationUserDao {
                             "ON up.user_role_id=ur.id\n" +
                             "WHERE username=?", BeanPropertyRowMapper.newInstance(UserDto.class), username);
 
-        List<Authority> permissions = this.jdbcTemplate.query("" +
+        List<Authority> permissions = this.jdbcTemplate.query(
                 "SELECT p.title\n" +
                 "FROM user_role ur\n" +
                 "INNER JOIN user_role_access ura\n" +
